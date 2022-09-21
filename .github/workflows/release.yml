@@ -48,7 +48,7 @@ jobs:
   build:
     needs: generate
 
-    name: Publish to PyPI-test
+    name: Building generated code
     runs-on: ubuntu-latest
 
     steps:
@@ -89,7 +89,7 @@ jobs:
   publish:
     needs: build
 
-    name: Publish to PyPI-test
+    name: Publish to PyPI
     runs-on: ubuntu-latest
 
     steps:
