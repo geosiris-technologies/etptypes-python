@@ -1,10 +1,10 @@
 name: Build-and-Push
 
-# on:
-#   release:
-#     types: [created]
+on:
+  release:
+    types: [created]
 
-on: [push,pull_request]
+# on: [push,pull_request]
 
 jobs:
   generate:
@@ -74,7 +74,6 @@ jobs:
       - name: Build Etptypes-python
         run: |
           cd etptypes
-          ls 
           poetry build
 
       - name: Archive production artifacts
