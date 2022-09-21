@@ -79,7 +79,7 @@ jobs:
       - name: Python Black
         run: |
           cd ${{ github.workspace }}/etptypes
-          poetry run black -t py39 ./tmp/etptypes
+          poetry run black -t py39 etptypes
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
