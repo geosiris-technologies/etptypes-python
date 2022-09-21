@@ -74,6 +74,11 @@ jobs:
           poetry build
           ls ${{ github.workspace }}/etptypes/dist
 
+      - name: Python Black
+        run: |
+          cd ${{ github.workspace }}/etptypes
+          poetry run black -t py39 ./tmp/etptypes
+          
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
