@@ -8,7 +8,7 @@ on: [push,pull_request]
 
 jobs:
   generate:
-    name: Publish to PyPI
+    name: Generate etptypes code
     runs-on: ubuntu-latest
 
     steps:
