@@ -31,7 +31,7 @@ jobs:
 
       - name: Generate classes
         run: |
-          poetry run avro-to-python-etp output/Energistics tmp --pip etptypes --package_version ${{ secrets.$PACKAGE_VERSION }}
+          poetry run avro-to-python-etp output/Energistics tmp --pip etptypes --package_version ${{ secrets.PACKAGE_VERSION }}
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
