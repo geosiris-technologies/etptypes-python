@@ -19,7 +19,7 @@ jobs:
         with:
           python-version: 3.9
 
-      - name: Download COMMON v2.2
+      - name: Download ETP file
         run : wget http://geosiris.com/wp-content/uploads/2022/09/etp/${{ secrets.ETP_FILE_NAME}} -P ${{ github.workspace }}
 
       - name: Install Poetry
@@ -68,7 +68,7 @@ jobs:
       - name: Install Poetry
         run: |
           ls 
-          ls etptype
+          ls etptypes
           python -m pip install --upgrade pip
           pip install poetry
           pip install poetry-dynamic-versioning
