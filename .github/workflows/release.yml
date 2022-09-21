@@ -1,0 +1,117 @@
+name: Build-and-Push
+
+# on:
+#   release:
+#     types: [created]
+
+on: [push,pull_request]
+
+jobs:
+  generate:
+    name: Publish to PyPI
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Download COMMON v2.2
+        run : wget http://geosiris.com/wp-content/uploads/2022/09/etp/${{ secrets.ETP_FILE_NAME}} -P ${{ github.workspace }}
+
+      - name: Install Poetry
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          pip install poetry-dynamic-versioning
+          poetry install
+
+      - name: Translate avpr to avsc
+        run: |
+          poetry run avpr-to-avsc ${{ secrets.ETP_FILE_NAME}}
+
+      - name: Generate classes
+        run: |
+          poetry run avro-to-python-etp output/Energistics tmp --pip etptypes --package_version $PACKAGE_VERSION
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: etptypes-generated-artifact
+          retention-days: 1
+          path: |
+            ${{ github.workspace }}/tmp/etptypes/*
+  
+  build:
+    needs: generate
+
+    name: Publish to PyPI-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Get build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: etptypes-generated-artifact
+          path: etptypes/
+
+      - name: Install Poetry
+        run: |
+          ls 
+          ls etptype
+          python -m pip install --upgrade pip
+          pip install poetry
+          pip install poetry-dynamic-versioning
+
+      - name: Build Etptypes-python
+        run: |
+          cd etptypes
+          poetry build
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: etptypes-dist
+          retention-days: 1
+          path: |
+            ${{ github.workspace }}/etptypes/dist
+
+  publish:
+    needs: build
+
+    name: Publish to PyPI-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Get build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist-artifact
+          path: dist/
+
+      - name: Install Poetry
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry
+          pip install poetry-dynamic-versioning
+
+      - name: Upload to PyPI
+        run: |
+          poetry publish --username ${{ secrets.POETRY_PYPI_TOKEN_USERNAME}} --password ${{ secrets.POETRY_PYPI_TOKEN_PASSWORD}}

@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "etptypes-generator"
+version = "1.0.0"
+description = "etptype package generator from an avpr file"
+authors = [
+  "Lionel Untereiner <lionel.untereiner@geosiris.com>",
+  "Valentin Gauthier <valentin.gauthier@geosiris.com>"
+]
+
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.11"
+pydantic = "~1"
+typingx = "^0.6.0"
+avro-to-python-etp = "^1.0.0"
