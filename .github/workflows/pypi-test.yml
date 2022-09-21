@@ -81,6 +81,7 @@ jobs:
           retention-days: 1
           path: |
             ${{ github.workspace }}/etptypes/dist
+            ${{ github.workspace }}/etptypes/pyproject.toml
 
   publish:
     needs: build
@@ -100,18 +101,18 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: dist-artifact
-          path: dist/
+          path: etptypes/
 
       - name: Install Poetry
         run: |
-          ls dist
+          ls etptypes
           python -m pip install --upgrade pip
           pip install poetry
           pip install poetry-dynamic-versioning
 
       - name: Upload to PyPI TEST
         run: |
-          ls
+          cd etptypes
           poetry config repositories.test https://test.pypi.org/legacy/
           poetry config http-basic.test ${{ secrets.POETRY_PYPI_TOKEN_USERNAME}} ${{ secrets.POETRY_TEST_PYPI_TOKEN_PASSWORD}}
           poetry publish --repository test

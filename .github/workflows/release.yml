@@ -83,6 +83,7 @@ jobs:
           retention-days: 1
           path: |
             ${{ github.workspace }}/etptypes/dist
+            ${{ github.workspace }}/etptypes/pyproject.toml
 
   publish:
     needs: build
@@ -102,7 +103,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: dist-artifact
-          path: dist/
+          path: etptypes/
 
       - name: Install Poetry
         run: |
@@ -112,4 +113,5 @@ jobs:
 
       - name: Upload to PyPI
         run: |
+          cd etptypes
           poetry publish --username ${{ secrets.POETRY_PYPI_TOKEN_USERNAME}} --password ${{ secrets.POETRY_PYPI_TOKEN_PASSWORD}}
