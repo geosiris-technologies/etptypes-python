@@ -80,7 +80,7 @@ jobs:
           cd etptypes
           rm pyproject.toml
           cp ${{ github.workspace }}/pyproject.toml .
-          cp ${{ github.workspace }}/LICENCE .
+          cp ${{ github.workspace }}/LICENSE .
           cp ${{ github.workspace }}/README.md .
           poetry build
 
