@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "etptypes"
-version = "1.0.1"
+version = "0.0.0"
 description = "ETP python dev kit"
 authors = [
   "Lionel Untereiner <lionel.untereiner@geosiris.com>",
@@ -8,7 +8,7 @@ authors = [
 ]
 license = "Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/geosiris-technologies/etpproto-python"
+repository = "https://github.com/geosiris-technologies/etptypes-python"
 homepage = "http://www.geosiris.com"
 classifiers = [
   "Intended Audience :: Information Technology",
@@ -35,9 +35,21 @@ classifiers = [
 ]
 keywords = ["ETP"]
 
-
-
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "~1"
 typingx = "^0.6.0"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "pep440"
+format-jinja = """
+    {%- if distance == 0 -%}
+        {{ serialize_pep440(base, stage, revision) }}
+    {%- elif revision is not none -%}
+        {{ serialize_pep440(base, stage, revision + 1, dev=distance) }}
+    {%- else -%}
+        {{ serialize_pep440(bump_version(base), stage, revision, dev=distance) }}
+    {%- endif -%}
+"""
