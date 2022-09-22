@@ -1,0 +1,7 @@
+dist/
+*.sublime*
+*.lock
+
+output/
+dist/
+tmp/
