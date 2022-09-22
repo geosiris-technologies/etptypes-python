@@ -92,6 +92,8 @@ jobs:
           path: |
             ${{ github.workspace }}/etptypes/dist
             ${{ github.workspace }}/etptypes/pyproject.toml
+            ${{ github.workspace }}/etptypes/LICENSE
+            ${{ github.workspace }}/etptypes/README.md
 
   publish:
     needs: build
