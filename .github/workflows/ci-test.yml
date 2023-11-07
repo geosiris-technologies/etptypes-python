@@ -46,6 +46,8 @@ jobs:
             ${{ github.workspace }}/tmp/etptypes/*
 
   unit-tests:
+    needs: generate
+    
     name: Unit tests (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
 
