@@ -13,6 +13,12 @@ inputs:
     required: true
     default: '3.x'
 
+  toml-path:
+    description: 'path of the toml'
+    required: false
+    default: '.'
+
+
 runs:
   using: "composite"
   steps:
@@ -51,6 +57,7 @@ runs:
     - name: Install dependencies and library
       # if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       run: |
+        cd ${{ inputs.toml-path }}
         poetry install --no-interaction
         poetry add pytest
       shell: bash

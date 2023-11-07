@@ -8,17 +8,11 @@ on:
   push:
   pull_request:
 
+env:
+  GENERATED_CODE_FOLDER: etptypes
+
+
 jobs:
-
-  generate:
-    strategy:
-      matrix:
-        python-version: ["3.9", "3.10"]
-
-    uses: .github/workflows/partials/build.yml
-    with:
-      python-version: ${{ matrix.python-version }}
-    secrets: inherit
 
   unit-tests:
     needs: generate
@@ -33,30 +27,34 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get build artifacts
-        uses: actions/download-artifact@v3
+      - name: Generate code from avro-to-python-etp
+        uses: ./.github/actions/generate
         with:
-          name: etptypes-generated-artifact-v${{ matrix.python-version }}
-          path: etptypes/
+          python-version: ${{ inputs.python-version }}
+          dest-folder: ${{ GENERATED_CODE_FOLDER }}
 
       - name: Install dependencies
         uses: ./.github/actions/prepare-poetry
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ inputs.python-version }}
+          toml-path: ${{ GENERATED_CODE_FOLDER }}
+
 
       - name: Run pytest
-        run: poetry run pytest --cov=etptypes --cov-report=xml --junitxml=pytest.xml
+        run: |
+          cd ${{ GENERATED_CODE_FOLDER }}
+          poetry run pytest --cov=etptypes --cov-report=xml --junitxml=pytest.xml
     
       - name: Upload pytest artifacts
         if: ${{ always() }}
         uses: actions/upload-artifact@v3
         with:
           name: Unit Test Results (Python ${{ matrix.python-version }})
-          path: pytest.xml
+          path: ${{ GENERATED_CODE_FOLDER }}/pytest.xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage.xml
+          files: ${{ GENERATED_CODE_FOLDER }}/coverage.xml
           fail_ci_if_error: true
