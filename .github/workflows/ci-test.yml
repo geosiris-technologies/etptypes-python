@@ -31,18 +31,18 @@ jobs:
         uses: ./.github/actions/generate
         with:
           python-version: ${{ inputs.python-version }}
-          dest-folder: ${{ GENERATED_CODE_FOLDER }}
+          dest-folder: ${{ env.GENERATED_CODE_FOLDER }}
 
       - name: Install dependencies
         uses: ./.github/actions/prepare-poetry
         with:
           python-version: ${{ inputs.python-version }}
-          toml-path: ${{ GENERATED_CODE_FOLDER }}
+          toml-path: ${{ env.GENERATED_CODE_FOLDER }}
 
 
       - name: Run pytest
         run: |
-          cd ${{ GENERATED_CODE_FOLDER }}
+          cd ${{ env.GENERATED_CODE_FOLDER }}
           poetry run pytest --cov=etptypes --cov-report=xml --junitxml=pytest.xml
     
       - name: Upload pytest artifacts
@@ -50,11 +50,11 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: Unit Test Results (Python ${{ matrix.python-version }})
-          path: ${{ GENERATED_CODE_FOLDER }}/pytest.xml
+          path: ${{ env.GENERATED_CODE_FOLDER }}/pytest.xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ${{ GENERATED_CODE_FOLDER }}/coverage.xml
+          files: ${{ env.GENERATED_CODE_FOLDER }}/coverage.xml
           fail_ci_if_error: true
