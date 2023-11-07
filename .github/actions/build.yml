@@ -1,0 +1,44 @@
+##
+## Copyright (c) 2022-2023 Geosiris.
+## SPDX-License-Identifier: Apache-2.0
+##
+
+name: Generate 
+Description: Generates code from avro-to-python-etp 
+
+inputs:
+  python-version:  
+    description: 'Python version to use'
+    required: true
+    default: '3.9'
+
+runs:
+  using: "composite"
+  runs-on: ubuntu-latest
+
+  steps:
+    - uses: actions/checkout@v3
+
+    - name: Download ETP file
+      run : wget http://geosiris.com/wp-content/uploads/2022/09/etp/${{ secrets.ETP_FILE_NAME }} -P ${{ github.workspace }}
+
+    - name: Install dependencies
+        uses: ./.github/actions/prepare-poetry
+        with:
+          python-version: ${{ inputs.python-version }}
+
+    - name: Translate avpr to avsc
+      run: |
+        poetry run avpr-to-avsc ${{ secrets.ETP_FILE_NAME }}
+
+    - name: Generate classes
+      run: |
+        poetry run avro-to-python-etp output/Energistics tmp --pip etptypes --package_version ${{ secrets.PACKAGE_VERSION }} --author "Valentin Gauthier <valentin.gauthier@geosiris.com>"
+
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: etptypes-generated-artifact-v${{ inputs.python-version }}
+        retention-days: 1
+        path: |
+          ${{ github.workspace }}/tmp/etptypes/*
