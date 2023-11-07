@@ -15,8 +15,6 @@ env:
 jobs:
 
   unit-tests:
-    needs: generate
-
     name: Unit tests (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
 
