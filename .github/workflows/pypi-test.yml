@@ -1,3 +1,7 @@
+##
+## Copyright (c) 2022-2023 Geosiris.
+## SPDX-License-Identifier: Apache-2.0
+##
 name: Build-and-Push-TEST
 
 on: [push,pull_request]
@@ -16,7 +20,7 @@ jobs:
           python-version: 3.9
 
       - name: Download ETP file
-        run : wget http://geosiris.com/wp-content/uploads/2022/09/etp/${{ secrets.ETP_FILE_NAME}} -P ${{ github.workspace }}
+        run : wget http://geosiris.com/wp-content/uploads/2022/09/etp/${{ secrets.ETP_FILE_NAME}} -P ${{ github.workspace }} 
 
       - name: Install dependencies
         run: |
@@ -29,7 +33,7 @@ jobs:
 
       - name: Generate classes
         run: |
-          avro-to-python-etp output/Energistics tmp --pip etptypes --package_version ${{ secrets.PACKAGE_VERSION }}
+          avro-to-python-etp output/Energistics tmp --pip etptypes --package_version ${{ secrets.PACKAGE_VERSION }} --author "Valentin Gauthier <valentin.gauthier@geosiris.com>"
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
