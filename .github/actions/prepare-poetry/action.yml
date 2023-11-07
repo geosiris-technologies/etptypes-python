@@ -50,7 +50,8 @@ runs:
      
     - name: Install dependencies and library
       # if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
-      run: poetry install --no-interaction
-      run: poetry add pytest
+      run: |
+        poetry install --no-interaction
+        poetry add pytest
       shell: bash
   
