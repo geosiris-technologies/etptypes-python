@@ -4,7 +4,11 @@
 ##
 name: Build-and-Push-TEST
 
-on: [push,pull_request]
+on: 
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   generate:
@@ -98,7 +102,7 @@ jobs:
   publish:
     needs: build
 
-    name: Pytest
+    name: Publish to PyPI-test
     runs-on: ubuntu-latest
 
     steps:
