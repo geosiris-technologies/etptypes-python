@@ -32,9 +32,9 @@ runs:
       shell: bash
 
     - name: Install dependencies
-        uses: ../prepare-poetry
-        with:
-          python-version: ${{ inputs.python-version }}
+      uses: ../prepare-poetry
+      with:
+        python-version: ${{ inputs.python-version }}
 
     - name: Translate avpr to avsc
       run: |
