@@ -12,6 +12,7 @@ on:
 
 env:
   GENERATED_CODE_FOLDER: etptypes
+  PYTHON_VERSION: 3.9
 
 jobs:
   build:
@@ -24,14 +25,14 @@ jobs:
       - name: Generate code from avro-to-python-etp
         uses: ./.github/actions/generate
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ PYTHON_VERSION }}
           dest-folder: ${{ env.GENERATED_CODE_FOLDER }}
           etp-file-name: ${{ secrets.ETP_FILE_NAME }}
 
       - name: Install dependencies
         uses: ./.github/actions/prepare-poetry
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ PYTHON_VERSION }}
           toml-path: ${{ env.GENERATED_CODE_FOLDER }}
 
       - name: Python Black
@@ -69,10 +70,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python ${{ PYTHON_VERSION }}
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: ${{ PYTHON_VERSION }}
 
       - name: Get build artifacts
         uses: actions/download-artifact@v3
