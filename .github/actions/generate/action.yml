@@ -1,0 +1,58 @@
+##
+## Copyright (c) 2022-2023 Geosiris.
+## SPDX-License-Identifier: Apache-2.0
+##
+---
+
+name: Prepare Python and Poetry
+Description: Install Python, Poetry and dev dependencies, cached for speed
+
+inputs:
+  python-version:  
+    description: 'Python version to use'
+    required: true
+    default: '3.x'
+
+  dest-folder:
+    description: 'folder where the code will be generated'
+    required: false
+    default: 'etptypes'
+
+  etp-file-name:
+    description: 'etp avpr file name'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+
+    - name: Download ETP file
+      run : wget http://geosiris.com/wp-content/uploads/2022/09/etp/${{ inputs.etp-file-name }} -P ${{ github.workspace }}
+      shell: bash
+
+    - name: Install dependencies
+      uses: ./.github/actions/prepare-poetry
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install avro-to-python-etp
+      run: |
+        poetry add avro-to-python-etp
+      shell: bash
+
+    - name: Translate avpr to avsc
+      run: |
+        poetry run avpr-to-avsc ${{ inputs.etp-file-name }}
+      shell: bash
+
+    - name: Generate classes
+      run: |
+        poetry run avro-to-python-etp output/Energistics tmp --pip etptypes --package_version 0.0.0 --author "Valentin Gauthier <valentin.gauthier@geosiris.com>"
+      shell: bash
+
+    - name: Move Generated Code
+      run: |
+        mv tmp/etptypes ${{ inputs.dest-folder }}
+        rm -rf tmp
+      shell: bash

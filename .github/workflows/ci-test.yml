@@ -1,0 +1,59 @@
+##
+## Copyright (c) 2022-2023 Geosiris.
+## SPDX-License-Identifier: Apache-2.0
+##
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+env:
+  GENERATED_CODE_FOLDER: etptypes
+
+jobs:
+
+  unit-tests:
+    name: Unit tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.9"] #, "3.10"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Generate code from avro-to-python-etp
+        uses: ./.github/actions/generate
+        with:
+          python-version: ${{ matrix.python-version }}
+          dest-folder: ${{ env.GENERATED_CODE_FOLDER }}
+          etp-file-name: ${{ secrets.ETP_FILE_NAME }}
+
+      - name: Install dependencies
+        uses: ./.github/actions/prepare-poetry
+        with:
+          python-version: ${{ matrix.python-version }}
+          toml-path: ${{ env.GENERATED_CODE_FOLDER }}
+
+
+      - name: Run pytest
+        run: |
+          cd ${{ env.GENERATED_CODE_FOLDER }}
+          poetry run pytest --cov=etptypes --cov-report=xml --junitxml=pytest.xml
+        shell: bash
+    
+      - name: Upload pytest artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: Unit Test Results (Python ${{ matrix.python-version }})
+          path: ${{ env.GENERATED_CODE_FOLDER }}/pytest.xml
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ${{ env.GENERATED_CODE_FOLDER }}/coverage.xml
+          fail_ci_if_error: true
