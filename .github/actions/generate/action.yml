@@ -43,7 +43,7 @@ runs:
 
     - name: Generate classes
       run: |
-        poetry run avro-to-python-etp output/Energistics tmp --pip etptypes --package_version ${{ secrets.PACKAGE_VERSION }} --author "Valentin Gauthier <valentin.gauthier@geosiris.com>"
+        poetry run avro-to-python-etp output/Energistics tmp --pip etptypes --package_version 0.0.0 --author "Valentin Gauthier <valentin.gauthier@geosiris.com>"
       shell: bash
 
     - name: Move Generated Code
