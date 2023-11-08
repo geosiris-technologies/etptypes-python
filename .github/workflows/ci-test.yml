@@ -30,6 +30,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           dest-folder: ${{ env.GENERATED_CODE_FOLDER }}
+          etp-file-name: ${{ secrets.ETP_FILE_NAME }}
 
       - name: Install dependencies
         uses: ./.github/actions/prepare-poetry

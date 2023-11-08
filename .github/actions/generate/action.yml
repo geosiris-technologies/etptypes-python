@@ -18,13 +18,17 @@ inputs:
     required: false
     default: 'etptypes'
 
+  etp-file-name:
+    description: 'etp avpr file name'
+    required: true
+
 runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v3
 
     - name: Download ETP file
-      run : wget http://geosiris.com/wp-content/uploads/2022/09/etp/${{ secrets.ETP_FILE_NAME }} -P ${{ github.workspace }}
+      run : wget http://geosiris.com/wp-content/uploads/2022/09/etp/${{ inputs.etp-file-name }} -P ${{ github.workspace }}
 
     - name: Install dependencies
         uses: ./.github/actions/prepare-poetry
@@ -33,7 +37,7 @@ runs:
 
     - name: Translate avpr to avsc
       run: |
-        poetry run avpr-to-avsc ${{ secrets.ETP_FILE_NAME }}
+        poetry run avpr-to-avsc ${{ inputs.etp-file-name }}
 
     - name: Generate classes
       run: |

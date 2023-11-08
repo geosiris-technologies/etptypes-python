@@ -7,12 +7,13 @@ name: Generate
 Description: Generates code from avro-to-python-etp 
 
 inputs:
-  python-version:  
+  python-version:
     description: 'Python version to use'
     required: true
     default: '3.9'
-
-secrets: inherit
+  etp-file-name:
+    description: 'etp avpr file name'
+    required: true
 
 runs:
   using: "composite"
@@ -22,7 +23,7 @@ runs:
     - uses: actions/checkout@v3
 
     - name: Download ETP file
-      run : wget http://geosiris.com/wp-content/uploads/2022/09/etp/${{ secrets.ETP_FILE_NAME }} -P ${{ github.workspace }}
+      run : wget http://geosiris.com/wp-content/uploads/2022/09/etp/${{ inputs.etp-file-name }} -P ${{ github.workspace }}
 
     - name: Install dependencies
         uses: ./.github/actions/prepare-poetry
@@ -31,11 +32,11 @@ runs:
 
     - name: Translate avpr to avsc
       run: |
-        poetry run avpr-to-avsc ${{ secrets.ETP_FILE_NAME }}
+        poetry run avpr-to-avsc ${{ inputs.etp-file-name }}
 
     - name: Generate classes
       run: |
-        poetry run avro-to-python-etp output/Energistics tmp --pip etptypes --package_version ${{ secrets.PACKAGE_VERSION }} --author "Valentin Gauthier <valentin.gauthier@geosiris.com>"
+        poetry run avro-to-python-etp output/Energistics tmp --pip etptypes --package_version 0.0.0 --author "Valentin Gauthier <valentin.gauthier@geosiris.com>"
 
     - name: Archive production artifacts
       uses: actions/upload-artifact@v3
