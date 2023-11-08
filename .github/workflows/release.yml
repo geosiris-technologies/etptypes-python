@@ -63,7 +63,7 @@ jobs:
   publish:
     needs: build
 
-    name: Publish to PyPI
+    name: Publish to PyPI-test
     runs-on: ubuntu-latest
 
     steps:
@@ -78,20 +78,15 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: dist-artifact
-          path: etptypes/
+          path: ${{ env.GENERATED_CODE_FOLDER }}
 
-      - name: Install Poetry
-        run: |
-          python -m pip install --upgrade pip
-          pip install poetry
-          pip install poetry-dynamic-versioning
+      - name: Install dependencies
+        uses: ./.github/actions/prepare-poetry
+        with:
+          python-version: ${{ matrix.python-version }}
+          toml-path: ${{ env.GENERATED_CODE_FOLDER }}
 
-      - name: Install Black
+      - name: Upload to PyPI TEST
         run: |
-          poetry add black
-          poetry run black etptypes
-
-      - name: Upload to PyPI
-        run: |
-          cd etptypes
+          cd ${{ env.GENERATED_CODE_FOLDER }}
           poetry publish --username ${{ secrets.POETRY_PYPI_TOKEN_USERNAME}} --password ${{ secrets.POETRY_PYPI_TOKEN_PASSWORD}}
