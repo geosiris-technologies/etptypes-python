@@ -28,13 +28,13 @@ jobs:
       - name: Generate code from avro-to-python-etp
         uses: ./.github/actions/generate
         with:
-          python-version: ${{ inputs.python-version }}
+          python-version: ${{ matrix.python-version }}
           dest-folder: ${{ env.GENERATED_CODE_FOLDER }}
 
       - name: Install dependencies
         uses: ./.github/actions/prepare-poetry
         with:
-          python-version: ${{ inputs.python-version }}
+          python-version: ${{ matrix.python-version }}
           toml-path: ${{ env.GENERATED_CODE_FOLDER }}
 
 
