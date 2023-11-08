@@ -40,6 +40,7 @@ keywords = ["ETP"]
 python = "^3.8"
 pydantic = "~1"
 typingx = "^0.6.0"
+avro-to-python-etp = "^1.0.4"
 
 [tool.poetry-dynamic-versioning]
 enable = true
