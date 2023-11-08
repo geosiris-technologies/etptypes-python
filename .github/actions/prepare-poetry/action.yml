@@ -40,11 +40,6 @@ runs:
         version: 1.5.1
         virtualenvs-create: true
         virtualenvs-in-project: true
-
-    - name: Install Poetry Plugins
-      run: |
-        poetry add poetry-dynamic-versioning[plugin]
-      shell: bash
       
     - name: Load cached venv
       id: cached-poetry-dependencies
@@ -58,5 +53,6 @@ runs:
       run: |
         cd ${{ inputs.toml-path }}
         poetry install --no-interaction
+        poetry self add poetry-dynamic-versioning[plugin]
       shell: bash
   
