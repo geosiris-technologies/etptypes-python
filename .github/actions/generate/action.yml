@@ -39,15 +39,18 @@ runs:
     - name: Translate avpr to avsc
       run: |
         poetry run avpr-to-avsc ${{ inputs.etp-file-name }}
+      shell: bash
 
     - name: Generate classes
       run: |
         poetry run avro-to-python-etp output/Energistics tmp --pip etptypes --package_version ${{ secrets.PACKAGE_VERSION }} --author "Valentin Gauthier <valentin.gauthier@geosiris.com>"
+      shell: bash
 
     - name: Move Generated Code
       run: |
         mv tmp/etptypes/* ${{ inputs.dest-folder }}
         rm -rf tmp
+      shell: bash
 
     # - name: Archive production artifacts
     #   uses: actions/upload-artifact@v3

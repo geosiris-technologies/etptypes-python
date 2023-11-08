@@ -43,6 +43,7 @@ jobs:
         run: |
           cd ${{ env.GENERATED_CODE_FOLDER }}
           poetry run pytest --cov=etptypes --cov-report=xml --junitxml=pytest.xml
+        shell: bash
     
       - name: Upload pytest artifacts
         if: ${{ always() }}
