@@ -12,6 +12,8 @@ inputs:
     required: true
     default: '3.9'
 
+secrets: inherit
+
 runs:
   using: "composite"
   runs-on: ubuntu-latest
