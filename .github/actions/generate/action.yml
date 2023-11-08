@@ -29,9 +29,10 @@ runs:
 
     - name: Download ETP file
       run : wget http://geosiris.com/wp-content/uploads/2022/09/etp/${{ inputs.etp-file-name }} -P ${{ github.workspace }}
+      shell: bash
 
     - name: Install dependencies
-        uses: ./.github/actions/prepare-poetry
+        uses: ../prepare-poetry
         with:
           python-version: ${{ inputs.python-version }}
 
