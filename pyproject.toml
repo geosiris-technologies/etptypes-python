@@ -27,7 +27,6 @@ classifiers = [
   "Intended Audience :: Developers",
   "License :: OSI Approved :: Apache Software License",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
@@ -40,7 +39,6 @@ keywords = ["ETP"]
 python = "^3.8"
 pydantic = "~1"
 typingx = "^0.6.0"
-avro-to-python-etp = "^1.0.4"
 
 [tool.poetry-dynamic-versioning]
 enable = true

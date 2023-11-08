@@ -36,6 +36,11 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
 
+    - name: Install avro-to-python-etp
+      run: |
+        poetry add avro-to-python-etp
+      shell: bash
+
     - name: Translate avpr to avsc
       run: |
         poetry run avpr-to-avsc ${{ inputs.etp-file-name }}
@@ -51,12 +56,3 @@ runs:
         mv tmp/etptypes ${{ inputs.dest-folder }}
         rm -rf tmp
       shell: bash
-
-    # - name: Archive production artifacts
-    #   uses: actions/upload-artifact@v3
-    #   with:
-    #     name: etptypes-generated-artifact-v${{ inputs.python-version }}
-    #     retention-days: 1
-    #     path: |
-    #       ${{ github.workspace }}/tmp/etptypes/*
-  
