@@ -48,7 +48,7 @@ runs:
 
     - name: Move Generated Code
       run: |
-        mv tmp/etptypes/* ${{ inputs.dest-folder }}
+        mv tmp/etptypes ${{ inputs.dest-folder }}
         rm -rf tmp
       shell: bash
 
