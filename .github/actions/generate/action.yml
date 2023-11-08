@@ -32,7 +32,7 @@ runs:
       shell: bash
 
     - name: Install dependencies
-      uses: ../prepare-poetry
+      uses: ./.github/actions/prepare-poetry
       with:
         python-version: ${{ inputs.python-version }}
 
