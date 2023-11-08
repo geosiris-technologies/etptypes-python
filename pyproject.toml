@@ -47,13 +47,11 @@ build-backend = "poetry_dynamic_versioning.backend"
 [tool.poetry-dynamic-versioning]
 enable = true
 vcs = "git"
-style = "pep440"
+pattern  = "^(?P<base>\\d+\\.\\d+\\.\\d+)(-?((?P<stage>[a-zA-Z]+)\\.?(?P<revision>\\d+)?))?"
 format-jinja = """
     {%- if distance == 0 -%}
-        {{ serialize_pep440(base, stage, revision) }}
-    {%- elif revision is not none -%}
-        {{ serialize_pep440(base, stage, revision + 1, dev=distance) }}
+        {{- base -}}
     {%- else -%}
-        {{ serialize_pep440(bump_version(base), stage, revision, dev=distance) }}
+        {{- base }}.dev{{ distance }}+g{{commit}}
     {%- endif -%}
 """
