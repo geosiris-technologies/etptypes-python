@@ -25,7 +25,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Download ETP file
       run : wget http://geosiris.com/wp-content/uploads/2022/09/etp/${{ inputs.etp-file-name }} -P ${{ github.workspace }}

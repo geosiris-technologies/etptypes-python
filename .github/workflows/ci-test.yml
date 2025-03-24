@@ -21,7 +21,7 @@ jobs:
         python-version: ["3.9"] #, "3.10"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Generate code from avro-to-python-etp
         uses: ./.github/actions/generate
@@ -46,13 +46,13 @@ jobs:
     
       - name: Upload pytest artifacts
         if: ${{ always() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Unit Test Results (Python ${{ matrix.python-version }})
           path: ${{ env.GENERATED_CODE_FOLDER }}/pytest.xml
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ${{ env.GENERATED_CODE_FOLDER }}/coverage.xml
