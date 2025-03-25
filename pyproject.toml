@@ -36,8 +36,8 @@ classifiers = [
 keywords = ["ETP"]
 
 [tool.poetry.dependencies]
-python = "^3.9, <4.0.0"
-pydantic = "~1"
+python = "^3.9"
+pydantic = "^2.10.0"
 typingx = "^0.6.0"
 
 [build-system]
