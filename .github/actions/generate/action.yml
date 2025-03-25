@@ -38,7 +38,7 @@ runs:
 
     - name: Install avro-to-python-etp
       run: |
-        poetry add -D avro-to-python-etp
+        poetry run python -m pip install avro-to-python-etp 
       shell: bash
 
     - name: Translate avpr to avsc
