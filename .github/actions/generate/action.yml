@@ -35,8 +35,8 @@ runs:
 
     - name: 🐍 Set up Python
         uses: actions/setup-python@v4
-        with:
-          python-version: ${{ inputs.python-version }}
+      with:
+        python-version: ${{ inputs.python-version }}
 
     - name: 💾 Cache Poetry dependencies
       uses: actions/cache@v3
