@@ -20,7 +20,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
 
       - name: Generate code from avro-to-python-etp
         uses: ./.github/actions/generate
@@ -40,7 +41,18 @@ jobs:
           cd ${{ env.GENERATED_CODE_FOLDER }}
           poetry run black etptypes
 
-      - name: Build Etptypes-python
+      - name: 📦 Install poetry-dynamic-versioning
+        run: poetry add -D poetry-dynamic-versioning[plugin]
+
+      - name: 📥 Install dependencies
+        run: poetry install --no-interaction --no-root
+
+      - name: Configure Poetry with PyPI repository and token
+        run: |
+          poetry config repositories.test-pypi https://test.pypi.org/legacy/
+          poetry config pypi-token.test-pypi ${{ secrets.POETRY_PYPI_TEST_TOKEN_VALUE }}
+
+      - name: 🛠️ Build the package
         run: |
           cd ${{ env.GENERATED_CODE_FOLDER }}
           rm pyproject.toml
@@ -49,44 +61,7 @@ jobs:
           cp ${{ github.workspace }}/README.md .
           poetry build
 
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-artifact
-          retention-days: 1
-          path: |
-            ${{ env.GENERATED_CODE_FOLDER }}/dist
-            ${{ env.GENERATED_CODE_FOLDER }}/pyproject.toml
-            ${{ env.GENERATED_CODE_FOLDER }}/LICENSE
-            ${{ env.GENERATED_CODE_FOLDER }}/README.md
-
-  publish:
-    needs: build
-
-    name: Publish to PyPI-test
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python ${{ env.PYTHON_VERSION }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Get build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: dist-artifact
-          path: ${{ env.GENERATED_CODE_FOLDER }}
-
-      - name: Install dependencies
-        uses: ./.github/actions/prepare-poetry
-        with:
-          python-version: ${{ matrix.python-version }}
-          toml-path: ${{ env.GENERATED_CODE_FOLDER }}
-
-      - name: Upload to PyPI TEST
+      - name: 🚀 Publish to PyPI
         run: |
-          cd ${{ env.GENERATED_CODE_FOLDER }}
-          poetry publish --username ${{ secrets.POETRY_PYPI_TOKEN_USERNAME}} --password ${{ secrets.POETRY_PYPI_TOKEN_PASSWORD}}
+          poetry config pypi-token.pypi ${{ secrets.POETRY_PYPI_TOKEN_PASSWORD }}
+          poetry publish
