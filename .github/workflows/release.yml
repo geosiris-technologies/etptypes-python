@@ -30,6 +30,11 @@ jobs:
           dest-folder: ${{ env.GENERATED_CODE_FOLDER }}
           etp-file-name: ${{ secrets.ETP_FILE_NAME }}
 
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
       - name: 💾 Cache Poetry dependencies
         uses: actions/cache@v3
         with:
@@ -46,6 +51,7 @@ jobs:
       - name: Python Black
         run: |
           cd ${{ env.GENERATED_CODE_FOLDER }}
+          poetry add -D black
           poetry run black etptypes
 
       - name: 📦 Install poetry-dynamic-versioning
@@ -53,11 +59,6 @@ jobs:
 
       - name: 📥 Install dependencies
         run: poetry install --no-interaction --no-root
-
-      - name: Configure Poetry with PyPI repository and token
-        run: |
-          poetry config repositories.test-pypi https://test.pypi.org/legacy/
-          poetry config pypi-token.test-pypi ${{ secrets.POETRY_PYPI_TEST_TOKEN_VALUE }}
 
       - name: 🛠️ Build the package
         run: |

@@ -53,6 +53,7 @@ jobs:
       - name: Python Black
         run: |
           cd ${{ env.GENERATED_CODE_FOLDER }}
+          poetry add -D black
           poetry run black etptypes
 
       - name: 📦 Install poetry-dynamic-versioning
