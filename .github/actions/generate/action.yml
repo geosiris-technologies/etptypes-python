@@ -46,6 +46,11 @@ runs:
         restore-keys: |
           poetry-${{ runner.os }}-
 
+    - name: 📦 Install poetry
+      uses: abatilo/actions-poetry@v4
+      with:
+        poetry-version: '2.1.1'
+
     - name: Install avro-to-python-etp
       run: |
         poetry add -D avro-to-python-etp 

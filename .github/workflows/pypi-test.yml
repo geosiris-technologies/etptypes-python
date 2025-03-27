@@ -45,6 +45,11 @@ jobs:
           restore-keys: |
             poetry-${{ runner.os }}-
 
+      - name: 📦 Install poetry
+        uses: abatilo/actions-poetry@v4
+        with:
+          poetry-version: '2.1.1'
+
       - name: Python Black
         run: |
           cd ${{ env.GENERATED_CODE_FOLDER }}
