@@ -40,9 +40,15 @@ python = "^3.9, <4.0"
 pydantic = "<2.0.0"
 typingx = "^0.6.0"
 
+# [build-system]
+# requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+# build-backend = "poetry_dynamic_versioning.backend"
 [build-system]
-requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
-build-backend = "poetry_dynamic_versioning.backend"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.plugins."poetry.plugin"]
+"dynamic-versioning" = "poetry_dynamic_versioning.plugin"
 
 [tool.poetry-dynamic-versioning]
 enable = true
