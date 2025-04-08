@@ -55,7 +55,7 @@ jobs:
           poetry run black etptypes
 
       - name: 📦 Install poetry-dynamic-versioning
-        run: poetry add -D poetry-dynamic-versioning[plugin]
+        run: poetry self add "poetry-dynamic-versioning[plugin]"
 
       - name: 📥 Install dependencies
         run: poetry install --no-interaction --no-root
