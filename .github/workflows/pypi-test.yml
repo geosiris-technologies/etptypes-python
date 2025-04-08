@@ -93,4 +93,4 @@ jobs:
         run: |
           cd ${{ env.GENERATED_CODE_FOLDER }}
           # poetry version
-          poetry publish --repository test-pypi --build
+          poetry publish --build --repository test-pypi
