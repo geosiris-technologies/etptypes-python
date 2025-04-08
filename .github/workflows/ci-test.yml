@@ -5,7 +5,8 @@
 name: Tests
 
 on:
-  pull_request:
+  workflow_dispatch:
+
 
 env:
   GENERATED_CODE_FOLDER: etptypes
@@ -40,7 +41,7 @@ jobs:
       - name: Run pytest
         run: |
           cd ${{ env.GENERATED_CODE_FOLDER }}
-          poetry add pytest
+          poetry add -D pytest
           poetry run pytest --cov=etptypes --cov-report=xml --junitxml=pytest.xml
         shell: bash
     

@@ -16,11 +16,14 @@ env:
 
 jobs:
   build:
-    name: Building generated code
+    name: Building and push generated code
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch the entire history to avoid shallow repository issues
 
       - name: Generate code from avro-to-python-etp
         uses: ./.github/actions/generate
@@ -29,66 +32,66 @@ jobs:
           dest-folder: ${{ env.GENERATED_CODE_FOLDER }}
           etp-file-name: ${{ secrets.ETP_FILE_NAME }}
 
-      - name: Install dependencies
-        uses: ./.github/actions/prepare-poetry
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-          toml-path: ${{ env.GENERATED_CODE_FOLDER }}
-
-      - name: Python Black
-        run: |
-          cd ${{ env.GENERATED_CODE_FOLDER }}
-          poetry run black etptypes
-
-      - name: Build Etptypes-python
-        run: |
-          cd ${{ env.GENERATED_CODE_FOLDER }}
-          rm pyproject.toml
-          cp ${{ github.workspace }}/pyproject.toml .
-          cp ${{ github.workspace }}/LICENSE .
-          cp ${{ github.workspace }}/README.md .
-          poetry build
-
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist-artifact
-          retention-days: 1
-          path: |
-            ${{ env.GENERATED_CODE_FOLDER }}/dist
-            ${{ env.GENERATED_CODE_FOLDER }}/pyproject.toml
-            ${{ env.GENERATED_CODE_FOLDER }}/LICENSE
-            ${{ env.GENERATED_CODE_FOLDER }}/README.md
-
-  publish:
-    needs: build
-
-    name: Publish to PyPI-test
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python ${{ env.PYTHON_VERSION }}
+      - name: 🐍 Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Get build artifacts
-        uses: actions/download-artifact@v4
+      - name: 💾 Cache Poetry dependencies
+        uses: actions/cache@v3
         with:
-          name: dist-artifact
-          path: ${{ env.GENERATED_CODE_FOLDER }}
+          path: ~/.cache/pypoetry
+          key: poetry-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            poetry-${{ runner.os }}-
 
-      - name: Install dependencies
-        uses: ./.github/actions/prepare-poetry
+      - name: 📦 Install poetry
+        uses: abatilo/actions-poetry@v4
         with:
-          python-version: ${{ matrix.python-version }}
-          toml-path: ${{ env.GENERATED_CODE_FOLDER }}
+          poetry-version: '2.1.1'
 
-      - name: Upload to PyPI TEST
+      - name: Python Black
         run: |
           cd ${{ env.GENERATED_CODE_FOLDER }}
-          poetry config repositories.test https://test.pypi.org/legacy/
-          poetry config http-basic.test ${{ secrets.POETRY_PYPI_TOKEN_USERNAME}} ${{ secrets.POETRY_TEST_PYPI_TOKEN_PASSWORD}}
-          poetry publish --repository test
+          poetry add -D black
+          poetry run black etptypes
+
+      - name: 📦 Install poetry-dynamic-versioning
+        run: poetry self add "poetry-dynamic-versioning[plugin]"
+
+      - name: 📥 Install dependencies
+        run: poetry install --no-interaction --no-root
+
+      - name: Configure Poetry with PyPI repository and token
+        run: |
+          poetry config repositories.test-pypi https://test.pypi.org/legacy/
+          poetry config pypi-token.test-pypi ${{ secrets.POETRY_PYPI_TEST_TOKEN_VALUE }}
+
+      - name: 🛠️ Build the package
+        run: |
+          cd ${{ env.GENERATED_CODE_FOLDER }}
+          rm -rf dist
+          rm pyproject.toml
+          cp ${{ github.workspace }}/pyproject.toml .
+          cp ${{ github.workspace }}/LICENSE .
+          cp ${{ github.workspace }}/README.md .
+          if [ ! -f pyproject.toml ]; then echo "pyproject.toml not found"; exit 1; fi
+          if [ ! -f LICENSE ]; then echo "LICENSE not found"; exit 1; fi
+          if [ ! -f README.md ]; then echo "README.md not found"; exit 1; fi
+          poetry version $(poetry version | awk '{print $2}')
+          poetry build
+
+      # - name: Debug Publish Step
+      #   run: |
+      #     cd ${{ env.GENERATED_CODE_FOLDER }}
+      #     pwd
+      #     ls dist
+      #     poetry version
+      #     poetry config --list
+
+      - name: 🚀 Publish to PyPI
+        run: |
+          cd ${{ env.GENERATED_CODE_FOLDER }}
+          # poetry version
+          # poetry publish --build --repository test-pypi
+          poetry publish --repository test-pypi
