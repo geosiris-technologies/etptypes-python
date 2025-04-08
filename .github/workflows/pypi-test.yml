@@ -74,6 +74,10 @@ jobs:
           cp ${{ github.workspace }}/pyproject.toml .
           cp ${{ github.workspace }}/LICENSE .
           cp ${{ github.workspace }}/README.md .
+          if [ ! -f pyproject.toml ]; then echo "pyproject.toml not found"; exit 1; fi
+          if [ ! -f LICENSE ]; then echo "LICENSE not found"; exit 1; fi
+          if [ ! -f README.md ]; then echo "README.md not found"; exit 1; fi
+          poetry version
           poetry build
 
       - name: 🚀 Publish to PyPI
