@@ -81,13 +81,13 @@ jobs:
           poetry version
           # poetry build
 
-      - name: Debug Publish Step
-        run: |
-          cd ${{ env.GENERATED_CODE_FOLDER }}
-          pwd
-          ls dist
-          poetry version
-          poetry config --list
+      # - name: Debug Publish Step
+      #   run: |
+      #     cd ${{ env.GENERATED_CODE_FOLDER }}
+      #     pwd
+      #     ls dist
+      #     poetry version
+      #     poetry config --list
 
       - name: 🚀 Publish to PyPI
         run: |
