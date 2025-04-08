@@ -70,6 +70,7 @@ jobs:
       - name: 🛠️ Build the package
         run: |
           cd ${{ env.GENERATED_CODE_FOLDER }}
+          rm -rf dist
           rm pyproject.toml
           cp ${{ github.workspace }}/pyproject.toml .
           cp ${{ github.workspace }}/LICENSE .
@@ -80,8 +81,16 @@ jobs:
           poetry version
           poetry build
 
+      - name: Debug Publish Step
+        run: |
+          cd ${{ env.GENERATED_CODE_FOLDER }}
+          pwd
+          ls dist
+          poetry version
+          poetry config --list
+
       - name: 🚀 Publish to PyPI
         run: |
           cd ${{ env.GENERATED_CODE_FOLDER }}
           ls dist
-          poetry publish --repository test-pypi --build
+          poetry publish --repository test-pypi
