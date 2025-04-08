@@ -79,11 +79,10 @@ jobs:
           if [ ! -f README.md ]; then echo "README.md not found"; exit 1; fi
           poetry version
           poetry build
-          ls dist/
 
       - name: 🚀 Publish to PyPI
         run: |
-          pwd
+          ls .
           cd ${{ env.GENERATED_CODE_FOLDER }}
-          pwd
+          ls .
           poetry publish --repository test-pypi
