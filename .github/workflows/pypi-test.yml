@@ -79,7 +79,7 @@ jobs:
           if [ ! -f LICENSE ]; then echo "LICENSE not found"; exit 1; fi
           if [ ! -f README.md ]; then echo "README.md not found"; exit 1; fi
           poetry version
-          # poetry build
+          poetry build
 
       - name: Debug Publish Step
         run: |
@@ -93,5 +93,5 @@ jobs:
         run: |
           cd ${{ env.GENERATED_CODE_FOLDER }}
           ls dist
-          poetry version
-          poetry publish --repository test-pypi --build
+          # poetry version
+          poetry publish --repository test-pypi

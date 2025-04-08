@@ -50,6 +50,9 @@ build-backend = "poetry_dynamic_versioning.backend"
 [tool.poetry.plugins."poetry.plugin"]
 "dynamic-versioning" = "poetry_dynamic_versioning.plugin"
 
+[tool.dunamai]
+version_strategy = "post-release"
+
 [tool.poetry-dynamic-versioning]
 enable = true
 vcs = "git"
