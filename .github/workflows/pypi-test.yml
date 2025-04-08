@@ -92,6 +92,5 @@ jobs:
       - name: 🚀 Publish to PyPI
         run: |
           cd ${{ env.GENERATED_CODE_FOLDER }}
-          ls dist
           # poetry version
           poetry publish --repository test-pypi --build
