@@ -78,7 +78,7 @@ jobs:
           if [ ! -f pyproject.toml ]; then echo "pyproject.toml not found"; exit 1; fi
           if [ ! -f LICENSE ]; then echo "LICENSE not found"; exit 1; fi
           if [ ! -f README.md ]; then echo "README.md not found"; exit 1; fi
-          poetry version
+          poetry version $(poetry version | awk '{print $2}')
           # poetry build
 
       # - name: Debug Publish Step
