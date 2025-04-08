@@ -38,6 +38,11 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
 
+    - name: 📦 Install poetry
+      uses: abatilo/actions-poetry@v4
+      with:
+        poetry-version: '2.1.1'
+
     - name: 💾 Cache Poetry dependencies
       uses: actions/cache@v3
       with:
@@ -46,14 +51,10 @@ runs:
         restore-keys: |
           poetry-${{ runner.os }}-
 
-    - name: 📦 Install poetry
-      uses: abatilo/actions-poetry@v4
-      with:
-        poetry-version: '2.1.1'
-
     - name: Install avro-to-python-etp
       run: |
         poetry self add avro-to-python-etp 
+        poetry install --no-interaction --no-root
       shell: bash
 
     - name: Translate avpr to avsc
