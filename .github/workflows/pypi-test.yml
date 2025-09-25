@@ -4,7 +4,7 @@
 ##
 name: Build-and-Push-TEST
 
-on: 
+on:
   push:
     branches:
       - main
@@ -23,7 +23,8 @@ jobs:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch the entire history to avoid shallow repository issues
+          fetch-depth: 0 # Fetch the entire history to avoid shallow repository issues
+          ref: ${{ github.ref }}
 
       - name: Generate code from avro-to-python-etp
         uses: ./.github/actions/generate
@@ -48,7 +49,7 @@ jobs:
       - name: 📦 Install poetry
         uses: abatilo/actions-poetry@v4
         with:
-          poetry-version: '2.1.1'
+          poetry-version: "2.1.1"
 
       - name: Python Black
         run: |
@@ -58,6 +59,9 @@ jobs:
 
       - name: 📦 Install poetry-dynamic-versioning
         run: poetry self add "poetry-dynamic-versioning[plugin]"
+
+      - name: Show poetry version
+        run: poetry version
 
       - name: 📥 Install dependencies
         run: poetry install --no-interaction --no-root
